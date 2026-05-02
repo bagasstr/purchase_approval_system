@@ -21,19 +21,32 @@ import {
 import { authClient } from '@/lib/auth-client';
 import { getTeamMembersAction } from '@/features/users/actions/userAction';
 import { toast } from 'sonner';
+import { UserData } from '@/types/types';
+import { getRoleByIdAction } from '@/features/roles/actions/rolesAction';
 
 const TeamPage = () => {
   const [members, setMembers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const { data: session } = authClient.useSession();
-  const isAdmin = session?.user?.role?.name?.toUpperCase() === 'ADMIN' || 
-                  session?.user?.role?.name?.toUpperCase() === 'SUPER-ADMIN';
+
+  const user = session?.user as UserData;
+  const [role, setRole] = useState<any>(null);
+
+  useEffect(() => {
+    if (user?.roleId) {
+      getRoleByIdAction(user.roleId).then(setRole).catch(console.error);
+    }
+  }, [user?.roleId]);
+
+  const isAdmin =
+    role?.name?.toUpperCase() === 'ADMIN' ||
+    role?.name?.toUpperCase() === 'SUPER-ADMIN';
 
   const fetchTeam = async () => {
     try {
       setLoading(true);
-      const data = await getTeamMembersAction(session?.user?.departmentId);
+      const data = await getTeamMembersAction(user?.departmentId);
       setMembers(data);
     } catch (error: any) {
       toast.error(error.message);
@@ -64,7 +77,9 @@ const TeamPage = () => {
           <p className='text-sm text-muted-foreground mt-1'>
             Daftar rekan kerja Anda {isAdmin ? 'di ' : 'di divisi '}
             <span className='font-bold text-foreground'>
-              {isAdmin ? 'Semua Divisi' : members[0]?.department?.name || 'Departemen Anda'}
+              {isAdmin
+                ? 'Semua Divisi'
+                : members[0]?.department?.name || 'Departemen Anda'}
             </span>
             .
           </p>
@@ -78,7 +93,8 @@ const TeamPage = () => {
               Anggota Tim
             </CardTitle>
             <CardDescription className='text-xs'>
-              Ada {members.length} orang {isAdmin ? 'terdaftar di sistem' : 'di divisi lu'}.
+              Ada {members.length} orang{' '}
+              {isAdmin ? 'terdaftar di sistem' : 'di divisi lu'}.
             </CardDescription>
           </div>
 

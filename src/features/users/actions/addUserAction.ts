@@ -13,7 +13,12 @@ export const addUserAction = async (allData: SignUpData) => {
       throw new Error('Anda tidak memiliki izin untuk menambah user.');
     }
 
-    if (!allData.email || !allData.name || !allData.password || !allData.phone) {
+    if (
+      !allData.email ||
+      !allData.name ||
+      !allData.password ||
+      !allData.phone
+    ) {
       return { success: false, error: 'Missing required information' };
     }
 
@@ -42,13 +47,15 @@ export const addUserAction = async (allData: SignUpData) => {
     await prisma.user.update({
       where: { email: allData.email },
       data: {
-        roleId: targetRole?.id,
-        department: allData.department ? {
-          connectOrCreate: {
-            where: { name: allData.department },
-            create: { name: allData.department },
-          },
-        } : undefined,
+        role: targetRole ? { connect: { id: targetRole.id } } : undefined,
+        department: allData.department
+          ? {
+              connectOrCreate: {
+                where: { name: allData.department },
+                create: { name: allData.department },
+              },
+            }
+          : undefined,
       },
     });
 
