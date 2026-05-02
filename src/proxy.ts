@@ -1,14 +1,13 @@
 import { NextResponse, type NextRequest } from 'next/server';
+import { auth } from './lib/auth';
 import { prisma } from './lib/prisma';
+import { headers } from 'next/headers';
 
 export async function proxy(request: NextRequest) {
-  const response = await fetch(new URL('/api/auth/get-session', request.url), {
-    headers: {
-      cookie: request.headers.get('cookie') || '',
-    },
+  // Direct session check — no self-fetch HTTP loop
+  const session = await auth.api.getSession({
+    headers: await headers(),
   });
-
-  const session = await response.json().catch(() => null);
 
   const { pathname } = request.nextUrl;
   const isAuthPage =
@@ -26,10 +25,11 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  let roleData = (session.user as any)?.role_data;
-  if (!roleData && session.user?.roleId) {
+  const user = session.user as any;
+  let roleData = user?.role_data;
+  if (!roleData && user?.roleId) {
     roleData = await prisma.role.findUnique({
-      where: { id: session?.user?.roleId as string | undefined },
+      where: { id: user.roleId },
     });
   }
 
