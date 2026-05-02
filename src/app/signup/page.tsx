@@ -1,10 +1,8 @@
-'use client';
-
-import { SignInForm } from '@/features/auth/components/SignIn';
 import { SignUpForm } from '@/features/auth/components/SignUp';
 import { cn } from '@/lib/utils';
 import { ArrowLeft, Command } from 'lucide-react';
 import Link from 'next/link';
+
 
 const SignUpPage = () => {
   return (

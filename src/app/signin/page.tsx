@@ -1,5 +1,3 @@
-'use client';
-
 import { SignInForm } from '@/features/auth/components/SignIn';
 import { cn } from '@/lib/utils';
 import { ArrowLeft, Command } from 'lucide-react';

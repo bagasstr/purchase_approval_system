@@ -4,25 +4,28 @@ import { prisma } from './lib/prisma';
 import { headers } from 'next/headers';
 
 export async function proxy(request: NextRequest) {
-  // Direct session check — no self-fetch HTTP loop
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
-
   const { pathname } = request.nextUrl;
   const isAuthPage =
     pathname.startsWith('/signin') || pathname.startsWith('/signup');
   const isDashboardPage = pathname.startsWith('/dashboard');
 
-  if (!session) {
-    if (isDashboardPage || pathname === '/') {
-      return NextResponse.redirect(new URL('/signin', request.url));
+  // Auth pages & root: lightweight cookie check only — skip DB queries
+  if (isAuthPage || pathname === '/') {
+    const sessionCookie = request.cookies.get('better-auth.session_token');
+    if (sessionCookie) {
+      return NextResponse.redirect(new URL('/dashboard', request.url));
     }
+    // No session cookie = let them through to signin/signup
     return NextResponse.next();
   }
 
-  if (isAuthPage || pathname === '/') {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+  // Dashboard routes: full session validation needed
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session) {
+    return NextResponse.redirect(new URL('/signin', request.url));
   }
 
   const user = session.user as any;
