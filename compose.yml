@@ -1,0 +1,28 @@
+services:
+  app:
+    image: node:24-alpine
+    working_dir: /app
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - '3000:3000'
+    command: sh -c "npm install && npm run dev"
+    environment:
+      CHOKIDAR_USEPOLLING: 'true'
+    depends_on:
+      - db
+
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: aprova
+      POSTGRES_PASSWORD: aprova12345566
+      POSTGRES_DB: purchase_approval
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

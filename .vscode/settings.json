@@ -1,0 +1,44 @@
+{
+  "vim.useSystemClipboard": true,
+  "vim.hlsearch": true,
+  "vim.incsearch": true,
+  "vim.easymotion": true,
+  "vim.surround": true,
+  "vim.insertModeKeyBindings": [
+    {
+      "before": ["j", "k"],
+      "after": ["<Esc>"]
+    },
+    {
+      "before": ["<C-j>"],
+      "commands": ["selectNextSuggestion"]
+    },
+    {
+      "before": ["<C-k>"],
+      "commands": ["selectPrevSuggestion"]
+    }
+  ],
+  "vim.normalModeKeyBindingsNonRecursive": [
+    {
+      "before": ["<C-h>"],
+      "commands": ["workbench.action.focusSideBar"]
+    },
+    {
+      "before": ["<C-l>"],
+      "commands": ["workbench.action.focusActiveEditorGroup"]
+    }
+  ],
+  "vim.handleKeys": {
+    "<C-a>": false,
+    "<C-c>": false,
+    "<C-v>": false,
+    "<C-x>": false,
+    "<C-s>": false,
+    "<C-f>": false,
+    "<C-p>": false,
+    "<C-z>": false,
+    "<C-w>": false,
+    "<C-b>": false,
+    "<C-n>": false
+  }
+}

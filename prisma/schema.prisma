@@ -1,0 +1,210 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// --- ENUMS ---
+
+enum RequestStatus {
+  DRAFT
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum ApprovalAction {
+  APPROVED
+  REJECTED
+  PENDING
+}
+
+model Department {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users            User[]
+  purchaseRequests PurchaseRequest[]
+
+  @@map("departments")
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  permissions String[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users         User[]
+  approvalSteps ApprovalStep[]
+
+  @@map("roles")
+}
+
+model User {
+  id            String  @id @default(cuid())
+  name          String
+  email         String  @unique
+  emailVerified Boolean @default(false)
+  image         String?
+  phone         String?
+
+  approvalLimit Float   @default(0)
+
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+
+  // Relasi ke Role (Biasa)
+  roleId String?
+  role   Role?   @relation(fields: [roleId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchaseRequests PurchaseRequest[]
+  approvals        ApprovalStep[]    @relation("ActorApprovals")
+  notifications    Notification[]
+  sessions         Session[]
+  accounts         Account[]
+
+  isActive Boolean?
+
+  banned     Boolean?  @default(false)
+  banReason  String?
+  banExpires DateTime?
+
+  @@index([departmentId])
+  @@index([roleId])
+  @@map("users")
+}
+
+model Session {
+  id             String   @id
+  expiresAt      DateTime
+  token          String   @unique
+  ipAddress      String?
+  userAgent      String?
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  impersonatedBy String?
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  password              String?
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verifications")
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("info") // info, success, warning, error
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("notifications")
+}
+
+model PurchaseRequest {
+  id           String         @id @default(cuid())
+  requestNo    String         @unique
+  title        String
+  description  String?
+  totalAmount  Float          @default(0)
+  status       RequestStatus  @default(PENDING)
+  userId       String
+  requester    User           @relation(fields: [userId], references: [id])
+  departmentId String
+  department   Department     @relation(fields: [departmentId], references: [id])
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  items        PurchaseItem[]
+  approvals    ApprovalStep[]
+
+  @@index([userId])
+  @@index([departmentId])
+  @@index([status])
+  @@map("purchase_requests")
+}
+
+model PurchaseItem {
+  id                String          @id @default(cuid())
+  itemName          String
+  quantity          Int             @default(1)
+  unitPrice         Float           @default(0)
+  subtotal          Float           @default(0)
+  purchaseRequestId String
+  purchaseRequest   PurchaseRequest @relation(fields: [purchaseRequestId], references: [id], onDelete: Cascade)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([purchaseRequestId])
+  @@map("purchase_items")
+}
+
+model ApprovalStep {
+  id                String          @id @default(cuid())
+  purchaseRequestId String
+  purchaseRequest   PurchaseRequest @relation(fields: [purchaseRequestId], references: [id], onDelete: Cascade)
+  stepOrder         Int
+  roleId            String
+  role              Role            @relation(fields: [roleId], references: [id])
+  action            ApprovalAction  @default(PENDING)
+  actorId           String?
+  actor             User?           @relation("ActorApprovals", fields: [actorId], references: [id])
+  remarks           String?
+  actedAt           DateTime?
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@unique([purchaseRequestId, stepOrder])
+  @@index([purchaseRequestId])
+  @@index([actorId])
+  @@map("approval_steps")
+}

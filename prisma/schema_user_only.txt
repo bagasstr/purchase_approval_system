@@ -1,0 +1,40 @@
+model User {
+  id            String  @id @default(cuid())
+  name          String
+  email         String  @unique
+  emailVerified Boolean @default(false)
+
+  image String?
+  phone String?
+
+  approvalLimit Decimal @default(0) @db.Decimal(15, 2)
+
+  roleId   String?
+  userRole Role?   @relation(fields: [roleId], references: [id])
+
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  purchaseRequests PurchaseRequest[]
+
+  approvals ApprovalStep[] @relation("ActorApprovals")
+
+  sessions Session[]
+  accounts Account[]
+
+  roles       String?
+  departments String?
+
+  isActive Boolean?
+
+  banned     Boolean?  @default(false)
+  banReason  String?
+  banExpires DateTime?
+
+  @@index([roleId])
+  @@index([departmentId])
+  @@map("users")
+}
