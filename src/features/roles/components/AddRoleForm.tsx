@@ -99,11 +99,11 @@ export const AddRoleForm = ({
     try {
       let result;
       if (editData) {
-        // Mode Edit
+
         result = await updateRoleAction(editData.id, data);
         toast.success(`Role ${data.name.toUpperCase()} berhasil di-update!`);
       } else {
-        // Mode Tambah
+
         result = await createRoleAction({
           name: data.name,
           permissions: data.permissions,

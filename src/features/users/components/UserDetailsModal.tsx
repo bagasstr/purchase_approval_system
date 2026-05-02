@@ -46,7 +46,7 @@ export function UserDetailsModal({
     approvalLimit: user?.approvalLimit || 0,
   });
 
-  // Sinkronisasi data pas user berubah
+
   useEffect(() => {
     if (user) {
       setFormData({
@@ -85,7 +85,7 @@ export function UserDetailsModal({
         </DialogHeader>
 
         <div className='grid gap-6 py-4'>
-          {/* Info Singkat */}
+          {}
           <div className='flex items-center gap-4 p-3 bg-muted/50 rounded-lg border border-dashed'>
             <div className='w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center font-bold text-lg text-primary'>
               {user.name.substring(0, 2).toUpperCase()}
@@ -98,7 +98,7 @@ export function UserDetailsModal({
             </div>
           </div>
 
-          {/* Role */}
+          {}
           <div className='grid gap-2'>
             <Label className='flex items-center gap-2 text-xs font-semibold'>
               <Shield className='w-3 h-3' /> Role / Hak Akses
@@ -122,7 +122,7 @@ export function UserDetailsModal({
             </Select>
           </div>
 
-          {/* Department */}
+          {}
           <div className='grid gap-2'>
             <Label className='flex items-center gap-2 text-xs font-semibold'>
               <Building className='w-3 h-3' /> Departemen / Divisi
@@ -150,7 +150,7 @@ export function UserDetailsModal({
             </Select>
           </div>
 
-          {/* Approval Limit */}
+          {}
           <div className='grid gap-2'>
             <Label className='flex items-center gap-2 text-xs font-semibold'>
               <Wallet className='w-3 h-3' /> Batas Persetujuan (Approval Limit)

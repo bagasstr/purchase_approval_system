@@ -1,5 +1,5 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+
 
 generator client {
   provider = "prisma-client"
@@ -10,7 +10,7 @@ datasource db {
   provider = "postgresql"
 }
 
-// --- ENUMS ---
+
 
 enum RequestStatus {
   DRAFT
@@ -63,7 +63,7 @@ model User {
   departmentId String?
   department   Department? @relation(fields: [departmentId], references: [id])
 
-  // Relasi ke Role (Biasa)
+
   roleId String?
   role   Role?   @relation(fields: [roleId], references: [id])
 
@@ -141,7 +141,7 @@ model Notification {
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   title     String
   message   String
-  type      String   @default("info") // info, success, warning, error
+  type      String   @default("info")
   link      String?
   isRead    Boolean  @default(false)
   createdAt DateTime @default(now())

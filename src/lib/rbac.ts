@@ -2,10 +2,7 @@ import { auth } from './auth';
 import { prisma } from './prisma';
 import { headers } from 'next/headers';
 
-/**
- * Ngambil data user lengkap beserta role & permissions-nya langsung dari database.
- * Pake ini di Server Actions atau Server Components.
- */
+
 export async function getCurrentUserWithPermissions() {
   const session = await auth.api.getSession({
     headers: await headers(),
@@ -29,14 +26,12 @@ export async function getCurrentUserWithPermissions() {
   };
 }
 
-/**
- * Fungsi buat nge-cek apakah user punya permission tertentu.
- */
+
 export async function hasPermission(permission: string) {
   const user = await getCurrentUserWithPermissions();
   if (!user) return false;
 
-  // Cek by name rolenya kalo butuh manual
+
   if (user.role?.name === 'ADMIN' || user.role?.name === 'super-admin')
     return true;
 

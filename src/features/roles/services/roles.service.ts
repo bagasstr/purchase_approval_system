@@ -1,9 +1,9 @@
 import { DataRole } from '@/types/types';
 import { rolesRepository } from '@/features/roles/repository/roles.repository';
 
-// Roles service has been migrated to Better-Auth RBAC
+
 export const rolesService = {
-  // Relational roles logic is deprecated
+
   async getById(id: string) {
     const role = await rolesRepository.getById(id);
     if (!role) throw new Error(`Role ${id} tidak ditemukan`);

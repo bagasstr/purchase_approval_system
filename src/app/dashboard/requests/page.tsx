@@ -70,9 +70,9 @@ const RequestPage = () => {
     if (req.status === 'APPROVED') {
       return { label: 'Selesai', class: 'bg-emerald-100 text-emerald-800' };
     }
-    // Kalau pending, kita cek nunggu siapa
+
     if (req.status === 'PENDING') {
-      // Cari step yang action-nya masih PENDING dengan stepOrder terkecil
+
       const currentStep = req.approvals?.find(
         (step: any) => step.action === 'PENDING',
       );
@@ -164,7 +164,7 @@ const RequestPage = () => {
         </div>
       </div>
       
-      {/* Widget Sisa Limit */}
+      {}
       {!isAdmin && session?.user && (
         <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mb-8'>
           <Card className='relative overflow-hidden border-none shadow-lg bg-gradient-to-br from-primary to-primary/80 text-primary-foreground'>
@@ -190,7 +190,7 @@ const RequestPage = () => {
 
       <Card>
         <CardHeader className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6'>
-          {/* Status Tabs */}
+          {}
           <div className='flex items-center gap-1 bg-muted/60 p-1 rounded-lg border'>
             {['All', 'Pending', 'Approved', 'Rejected'].map((tab) => (
               <button
@@ -297,7 +297,7 @@ const RequestPage = () => {
             </div>
           )}
 
-          {/* Pagination Controls */}
+          {}
           {totalPages > 1 && (
             <div className='flex items-center justify-between gap-2 mt-4 pt-4 border-t text-xs'>
               <span className='text-muted-foreground'>

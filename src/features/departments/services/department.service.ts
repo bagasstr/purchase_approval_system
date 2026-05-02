@@ -14,7 +14,7 @@ export const DepartmentService = {
   },
 
   async getAll() {
-    // Tetap return list kosong agar halaman UI tetap bisa dirender.
+
     return await DepartmentRepository.getAll();
   },
 

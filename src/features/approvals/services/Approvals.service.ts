@@ -15,20 +15,20 @@ export const ApprovalsServices = {
   },
 
   async updateApproval(id: string, data: ApprovalUpdateData) {
-    // Reuse the getApprovalById method for validation
+
     const existing = await ApprovalsServices.getApprovalById(id);
 
     if (existing.action !== 'PENDING') {
       throw new Error('Approval ini udah diproses');
     }
 
-    // Validasi Limit Approval
+
     if (data.action === 'APPROVED') {
       const requester = existing.purchaseRequest.requester;
       const requesterLimit = Number(requester.approvalLimit || 0);
       const prAmount = Number(existing.purchaseRequest.totalAmount);
 
-      // Validasi: nominal PR tidak boleh melebihi limit pemohon (requester)
+
       if (requesterLimit > 0 && prAmount > requesterLimit) {
         throw new Error(
           `Pengajuan ini (Rp ${prAmount.toLocaleString()}) melebihi batas limit pemohon ${requester.name} (Rp ${requesterLimit.toLocaleString()})!`,

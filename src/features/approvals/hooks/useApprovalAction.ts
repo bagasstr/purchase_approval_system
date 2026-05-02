@@ -19,7 +19,7 @@ export const useApprovalAction = (
     try {
       setIsSubmitting(true);
 
-      // Kalo tahap survey dan disetujui, update harga dulu
+
       if (isSurveyStep && action === 'APPROVED') {
         const itemsToUpdate = request.items.map((item: any) => ({
           id: item.id,

@@ -92,7 +92,7 @@ export const PurchaseRequestRepository = {
       },
     });
 
-    // NOTIF: Kabarin approver pertama
+
     const firstStep = newRequest.approvals.find((s) => s.stepOrder === 1);
     if (firstStep) {
       const targetUsers = await prisma.user.findMany({
@@ -100,7 +100,7 @@ export const PurchaseRequestRepository = {
       });
 
       for (const targetUser of targetUsers) {
-        // Filter departemen buat manager
+
         if (firstStep.role.name.toLowerCase().includes('manager')) {
           if (targetUser.departmentId !== newRequest.departmentId) continue;
         }

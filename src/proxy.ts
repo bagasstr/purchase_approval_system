@@ -16,17 +16,16 @@ export async function proxy(request: NextRequest) {
   const isDashboardPage = pathname.startsWith('/dashboard');
 
   if (!session) {
-    if (isDashboardPage) {
+    if (isDashboardPage || pathname === '/') {
       return NextResponse.redirect(new URL('/signin', request.url));
     }
     return NextResponse.next();
   }
 
-  if (isAuthPage) {
+  if (isAuthPage || pathname === '/') {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
 
-  // RBAC Check - Manual Fetch in Proxy (Node.js Runtime)
   let roleData = (session.user as any)?.role_data;
   if (!roleData && session.user?.roleId) {
     roleData = await prisma.role.findUnique({
@@ -37,12 +36,10 @@ export async function proxy(request: NextRequest) {
   const userRole = roleData?.name?.toUpperCase();
   const userPerms = roleData?.permissions || [];
 
-  // Super Admin & Admin bebas hambatan
   if (userRole === 'ADMIN' || userRole === 'SUPER-ADMIN') {
     return NextResponse.next();
   }
 
-  // Mapping Rute ke Permission
   const routePermissions: Record<string, string | string[]> = {
     '/dashboard/requests': 'purchase-request:create',
     '/dashboard/approvals': [
@@ -58,7 +55,6 @@ export async function proxy(request: NextRequest) {
     '/dashboard/analytics': ['purchase-request:view-all', 'role:all'],
   };
 
-  // Cek apakah rute sekarang butuh permission tertentu
   const requiredPerms = Object.entries(routePermissions).find(([route]) =>
     pathname.startsWith(route),
   )?.[1];
@@ -77,5 +73,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/signin', '/signup'],
+  matcher: ['/', '/dashboard/:path*', '/signin', '/signup'],
 };

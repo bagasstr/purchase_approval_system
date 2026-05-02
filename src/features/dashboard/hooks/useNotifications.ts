@@ -30,11 +30,11 @@ export const useNotifications = () => {
   useEffect(() => {
     setMounted(true);
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000); // 30 detik
+    const interval = setInterval(fetchNotifications, 30000);
     return () => clearInterval(interval);
   }, []);
 
-  // Close modal when clicking outside
+
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
       if (

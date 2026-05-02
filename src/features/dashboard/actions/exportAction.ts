@@ -23,7 +23,7 @@ export async function getExportDataAction() {
       orderBy: { createdAt: 'desc' },
     });
 
-    // Flatten data: satu baris per ITEM biar rapi
+
     const flattenedData: any[] = [];
     
     requests.forEach(req => {

@@ -111,7 +111,7 @@ const DashboardPage = () => {
         </div>
       </div>
 
-      {/* Grid Statistik */}
+      {}
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8'>
         {stats.map((stat, i) => (
           <Card key={i}>
@@ -133,9 +133,9 @@ const DashboardPage = () => {
         ))}
       </div>
 
-      {/* Konten Utama */}
+      {}
       <div className='grid gap-4 lg:grid-cols-3'>
-        {/* Kolom Kiri: Tabel Recent Requests */}
+        {}
         <Card className='lg:col-span-2'>
           <CardHeader className='flex flex-row items-center justify-between'>
             <div>
@@ -230,7 +230,7 @@ const DashboardPage = () => {
           </CardContent>
         </Card>
 
-        {/* Kolom Kanan: Quick Analytics / Summary */}
+        {}
         <Card className='flex flex-col justify-between'>
           <CardHeader>
             <CardTitle className='text-base font-semibold'>

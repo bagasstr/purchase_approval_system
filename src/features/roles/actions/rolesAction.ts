@@ -26,7 +26,7 @@ export async function createRoleAction(data: {
   permissions: string[];
 }) {
   try {
-    // Cek izin pake helper "Biasa"
+
     if (!(await hasPermission('role:all'))) {
       throw new Error('Anda tidak memiliki izin untuk mengelola role.');
     }

@@ -24,9 +24,9 @@ export const UserService = {
     return await UserRepository.updateProfile(id, data);
   },
 
-  // async updateRole(id: string, role: string) {
-  //   return await UserRepository.updateRole(id, role);
-  // },
+
+
+
 
   async updateRoleEmployee(email: string) {
     return await UserRepository.updateRoleEmployee(email);

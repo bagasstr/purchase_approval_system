@@ -52,7 +52,7 @@ export async function getAllRequestsAction() {
 
     const user = session.user as any;
 
-    // 1. Ambil data user lengkap buat dapet list permissions
+
     const userFull = await prisma.user.findUnique({
       where: { id: user.id },
       include: { role: true },
@@ -69,7 +69,7 @@ export async function getAllRequestsAction() {
       roleName.includes('manager') ||
       userPermissions.includes('purchase-request:approve-manager');
 
-    // 2. Tentukan filter berdasarkan role
+
     const whereClause: any = {};
     if (!isAdmin) {
       if (isManager) {
@@ -157,7 +157,7 @@ export async function updateRequestItemsAction(
     await prisma.$transaction(async (tx) => {
       let totalAmount = 0;
 
-      // Update tiap item
+
       for (const item of items) {
         const currentItem = await tx.purchaseItem.findFirst({
           where: { id: item.id, purchaseRequestId: requestId },
@@ -180,7 +180,7 @@ export async function updateRequestItemsAction(
         });
       }
 
-      // Update total PR
+
       await tx.purchaseRequest.update({
         where: { id: requestId },
         data: { totalAmount },

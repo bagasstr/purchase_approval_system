@@ -91,7 +91,7 @@ const DepartmentsPage = () => {
           onCancel={handleCancelEdit}
         />
 
-        {/* List Department */}
+        {}
         <Card className='md:col-span-2 backdrop-blur-sm bg-card/80 border-zinc-200/50 dark:border-zinc-800/50'>
           <CardHeader className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-6'>
             <div>

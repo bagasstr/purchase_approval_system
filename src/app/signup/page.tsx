@@ -9,9 +9,9 @@ import Link from 'next/link';
 const SignUpPage = () => {
   return (
     <div className='relative min-h-screen grid lg:grid-cols-2'>
-      {/* Side Panel */}
+      {}
       <div className='relative hidden lg:flex flex-col bg-zinc-950 p-10 text-white dark:border-r overflow-hidden'>
-        {/* Subtle Background Pattern/Gradient */}
+        {}
         <div className='absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-zinc-800/20 via-transparent to-transparent' />
         <div className='absolute inset-0 bg-gradient-to-b from-zinc-900/50 to-zinc-950' />
 
@@ -33,7 +33,7 @@ const SignUpPage = () => {
         </div>
       </div>
 
-      {/* Form Panel */}
+      {}
       <div className='flex flex-col justify-center items-center p-6 lg:p-10'>
         <div className='mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[400px]'>
           <div className='flex flex-col space-y-2 text-center lg:hidden'>

@@ -67,43 +67,43 @@ const AnalyticsPage = () => {
         return;
       }
 
-      // Load xlsx dynamically to keep initial bundle small
+
       const XLSX = await import('xlsx');
       
-      // Create worksheet
+
       const ws = XLSX.utils.json_to_sheet(exportData);
       
-      // Set column widths (wch: characters)
+
       const wscols = [
-        { wch: 15 }, // No. Request
-        { wch: 15 }, // Pemohon
-        { wch: 10 }, // Divisi
-        { wch: 25 }, // Nama Barang
-        { wch: 8 },  // Jumlah
-        { wch: 18 }, // Harga Satuan
-        { wch: 18 }, // Total PR
-        { wch: 10 }, // Status
-        { wch: 12 }, // Tanggal
+        { wch: 15 },
+        { wch: 15 },
+        { wch: 10 },
+        { wch: 25 },
+        { wch: 8 },
+        { wch: 18 },
+        { wch: 18 },
+        { wch: 10 },
+        { wch: 12 },
       ];
       ws['!cols'] = wscols;
 
-      // Apply currency format to 'Harga Satuan' (F) and 'Total PR' (G)
+
       const range = XLSX.utils.decode_range(ws['!ref'] || 'A1');
       for (let R = range.s.r + 1; R <= range.e.r; ++R) {
-        // Column F (Harga Satuan)
+
         const cellF = ws[XLSX.utils.encode_cell({ r: R, c: 5 })];
         if (cellF) cellF.z = '"Rp"#,##0';
         
-        // Column G (Total PR)
+
         const cellG = ws[XLSX.utils.encode_cell({ r: R, c: 6 })];
         if (cellG) cellG.z = '"Rp"#,##0';
       }
 
-      // Create workbook and append worksheet
+
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, 'Laporan Pengadaan');
 
-      // Export file
+
       XLSX.writeFile(wb, `Laporan_Pengadaan_${new Date().toISOString().split('T')[0]}.xlsx`);
       
       toast.success('Laporan Excel (.xlsx) berhasil di-download.');
@@ -173,7 +173,7 @@ const AnalyticsPage = () => {
         </Button>
       </div>
 
-      {/* Summary Cards */}
+      {}
       <div className='grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
         {summaryStats.map((stat, i) => (
           <Card key={i}>
@@ -190,7 +190,7 @@ const AnalyticsPage = () => {
       </div>
 
       <div className='grid gap-6 lg:grid-cols-2'>
-        {/* Monthly Trend */}
+        {}
         <Card className='p-6'>
           <CardHeader className='px-0 pt-0'>
             <CardTitle className='text-base font-semibold'>Tren Pengeluaran Bulanan</CardTitle>
@@ -223,7 +223,7 @@ const AnalyticsPage = () => {
           </div>
         </Card>
 
-        {/* Department Spending */}
+        {}
         <Card className='p-6'>
           <CardHeader className='px-0 pt-0'>
             <CardTitle className='text-base font-semibold'>Pengeluaran Per Divisi</CardTitle>
@@ -245,7 +245,7 @@ const AnalyticsPage = () => {
           </div>
         </Card>
 
-        {/* Status Distribution */}
+        {}
         <Card className='p-6'>
           <CardHeader className='px-0 pt-0'>
             <CardTitle className='text-base font-semibold'>Status Pengajuan</CardTitle>
@@ -274,7 +274,7 @@ const AnalyticsPage = () => {
           </div>
         </Card>
 
-        {/* Quick Tips/Insights */}
+        {}
         <Card className='p-6 flex flex-col justify-between bg-zinc-900 border-zinc-800'>
           <div>
             <CardTitle className='text-base font-semibold text-white'>Insight Pengadaan</CardTitle>

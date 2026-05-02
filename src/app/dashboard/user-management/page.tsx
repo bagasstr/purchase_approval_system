@@ -55,7 +55,7 @@ const UserManagementPage = () => {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
 
-  // Queries
+
   const { data: users = [], isLoading: isUsersLoading } = useQuery({
     queryKey: ['users'],
     queryFn: () => getAllUsersAction(),
@@ -71,7 +71,7 @@ const UserManagementPage = () => {
     queryFn: () => getAllRoleAction(),
   });
 
-  // Mutations
+
   const toggleStatusMutation = useMutation({
     mutationFn: ({ id, banned }: { id: string; banned: boolean }) =>
       toggleUserStatusAction(id, !banned),

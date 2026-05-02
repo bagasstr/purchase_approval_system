@@ -26,7 +26,7 @@ export const getDashboardStatsAction = async (): Promise<DashboardStats> => {
     const user = session.user as any;
     const userDepartmentId = user.departmentId;
 
-    // 1. Ambil data user lengkap buat dapet list permissions
+
     const userFull = await prisma.user.findUnique({
       where: { id: user.id },
       include: { role: true },
@@ -43,7 +43,7 @@ export const getDashboardStatsAction = async (): Promise<DashboardStats> => {
       roleName.includes('manager') ||
       userPermissions.includes('purchase-request:approve-manager');
 
-    // 2. Tentukan filter berdasarkan role
+
     const whereClause: any = {};
     if (!isAdmin) {
       if (isManager) {
@@ -53,7 +53,7 @@ export const getDashboardStatsAction = async (): Promise<DashboardStats> => {
       }
     }
 
-    // 3. Hitung stats dasar dengan filter
+
     const [total, pending, approved, allApproved] = await Promise.all([
       prisma.purchaseRequest.count({ where: whereClause }),
       prisma.purchaseRequest.count({ where: { ...whereClause, status: 'PENDING' } }),
@@ -66,7 +66,7 @@ export const getDashboardStatsAction = async (): Promise<DashboardStats> => {
 
     const totalSpent = allApproved.reduce((sum, item) => sum + Number(item.totalAmount), 0);
 
-    // 4. Ambil 5 request terbaru dengan filter
+
     const recentRequestsRaw = await prisma.purchaseRequest.findMany({
       where: whereClause,
       include: {
@@ -86,7 +86,7 @@ export const getDashboardStatsAction = async (): Promise<DashboardStats> => {
       status: req.status === 'APPROVED' ? 'Approved' : req.status === 'REJECTED' ? 'Rejected' : 'Pending',
     }));
 
-    // 5. Analisis pengeluaran per divisi (tetep buat admin, ato cuma divisi dia buat manager)
+
     const departments = await prisma.department.findMany({
       where: isAdmin ? {} : { id: userDepartmentId || 'none' },
       include: {

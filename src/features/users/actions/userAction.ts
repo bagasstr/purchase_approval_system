@@ -24,12 +24,12 @@ export async function getAllUsersAction() {
 
 export async function updateRoleUserAction(id: string, roleName: string) {
   try {
-    // Cek izin kelola user
+
     if (!(await hasPermission('user:all'))) {
       throw new Error('Kamu tidak memiliki izin kelola role');
     }
 
-    // Cari roleId berdasarkan nama role di tabel Role
+
     const targetRole = await prisma.role.findUnique({
       where: { name: roleName },
     });
@@ -38,7 +38,7 @@ export async function updateRoleUserAction(id: string, roleName: string) {
       throw new Error('Role tidak ditemukan di database.');
     }
 
-    // Update role user secara manual di DB via roleId
+
     const updatedRoleUser: any = await prisma.user.update({
       where: { id },
       data: {
@@ -46,7 +46,7 @@ export async function updateRoleUserAction(id: string, roleName: string) {
       },
     });
 
-    // Sanitasi data sebelum dikirim ke Client
+
     const result = {
       ...updatedRoleUser,
       approvalLimit: updatedRoleUser.approvalLimit

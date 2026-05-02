@@ -32,7 +32,7 @@ export const UserRepository = {
   },
 
   async updateRoleEmployee(email: string) {
-    // Cari role 'EMPLOYEE' dulu buat dapetin ID-nya
+
     const roleRecord = await prisma.role.findUnique({ where: { name: 'EMPLOYEE' } });
     return await prisma.user.update({
       where: { email },

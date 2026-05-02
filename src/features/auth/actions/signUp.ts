@@ -23,7 +23,7 @@ export const signUpAction = async (allData: SignUpData) => {
       return { success: false, error: 'Data tidak valid' };
     }
 
-    // 1. Buat user via Better-Auth
+
     const signUpRes = await (auth.api as any).signUpEmail({
       body: {
         name: allData.name,
@@ -39,7 +39,7 @@ export const signUpAction = async (allData: SignUpData) => {
       return { success: false, error: 'Gagal mendaftarkan user di Auth' };
     }
 
-    // 3. Update roleId user di database via Prisma
+
     await prisma.user.update({
       where: { email: allData.email },
       data: {

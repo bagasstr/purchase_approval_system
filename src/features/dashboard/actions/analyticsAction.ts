@@ -26,7 +26,7 @@ export const getAnalyticsAction = async (): Promise<AnalyticsData> => {
       throw new Error('Anda harus login terlebih dahulu');
     }
 
-    // Ambil data PR yang disetujui untuk analisis spending
+
     const approvedRequests = await prisma.purchaseRequest.findMany({
       where: { status: 'APPROVED' },
       select: {
@@ -36,7 +36,7 @@ export const getAnalyticsAction = async (): Promise<AnalyticsData> => {
       },
     });
 
-    // 1. Monthly Spending (Last 6 Months)
+
     const monthlyMap = new Map<string, number>();
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
     
@@ -46,7 +46,7 @@ export const getAnalyticsAction = async (): Promise<AnalyticsData> => {
       monthlyMap.set(monthLabel, (monthlyMap.get(monthLabel) || 0) + Number(req.totalAmount));
     });
 
-    // Kita ambil 6 bulan terakhir aja biar kaga kepanjangan
+
     const currentMonth = new Date().getMonth();
     const monthlySpending = [];
     for (let i = 5; i >= 0; i--) {
@@ -55,7 +55,7 @@ export const getAnalyticsAction = async (): Promise<AnalyticsData> => {
       monthlySpending.push({ month: label, total: monthlyMap.get(label) || 0 });
     }
 
-    // 2. Department Spending
+
     const deptMap = new Map<string, number>();
     approvedRequests.forEach(req => {
       const name = req.department.name;
@@ -63,7 +63,7 @@ export const getAnalyticsAction = async (): Promise<AnalyticsData> => {
     });
     const departmentSpending = Array.from(deptMap.entries()).map(([name, total]) => ({ name, total }));
 
-    // 3. Status Distribution
+
     const statusCounts = await prisma.purchaseRequest.groupBy({
       by: ['status'],
       _count: { id: true },
@@ -73,7 +73,7 @@ export const getAnalyticsAction = async (): Promise<AnalyticsData> => {
       value: s._count.id,
     }));
 
-    // 4. Summary Stats
+
     const totalRequests = await prisma.purchaseRequest.count();
     const totalSpent = approvedRequests.reduce((sum, r) => sum + Number(r.totalAmount), 0);
     const approvedCount = approvedRequests.length;

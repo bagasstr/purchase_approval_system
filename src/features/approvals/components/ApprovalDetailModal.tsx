@@ -72,7 +72,7 @@ export const ApprovalDetailModal = ({
 
         <div className='grid grid-cols-3 gap-6 mt-6'>
           <div className='col-span-2 space-y-6'>
-            {/* Info Pengaju */}
+            {}
             <div className='grid grid-cols-2 gap-4 bg-muted/30 p-4 rounded-xl border border-dashed'>
               <div className='space-y-1'>
                 <p className='text-[10px] text-muted-foreground uppercase font-bold tracking-tight'>
@@ -105,7 +105,7 @@ export const ApprovalDetailModal = ({
               </div>
             </div>
 
-            {/* Daftar Barang */}
+            {}
             <div className='space-y-3'>
               <div className='flex items-center justify-between'>
                 <h4 className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
@@ -217,7 +217,7 @@ export const ApprovalDetailModal = ({
               </div>
             </div>
 
-            {/* Catatan Pengaju */}
+            {}
             {request.description && (
               <div className='bg-blue-50/50 dark:bg-blue-900/10 p-4 rounded-xl border border-blue-100 dark:border-blue-900/30 flex gap-3'>
                 <Info className='w-5 h-5 text-blue-500 shrink-0' />

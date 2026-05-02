@@ -83,14 +83,14 @@ export const ApprovalsRepository = {
       const prId = updatedStep.purchaseRequestId;
       const allSteps = updatedStep.purchaseRequest.approvals;
 
-      // Kalo ada yang nolak, PR otomatis REJECTED
+
       if (data.action === 'REJECTED') {
         await tx.purchaseRequest.update({
           where: { id: prId },
           data: { status: 'REJECTED' },
         });
 
-        // NOTIF: Kabarin requester kalo ditolak
+
         await tx.notification.create({
           data: {
             userId: updatedStep.purchaseRequest.userId,
@@ -101,7 +101,7 @@ export const ApprovalsRepository = {
           },
         });
       }
-      // Kalo setuju, cek apakah ini tahap terakhir
+
       else if (data.action === 'APPROVED') {
         const isAllApproved = allSteps.every((s) =>
           s.id === id ? true : s.action === 'APPROVED',
@@ -113,7 +113,7 @@ export const ApprovalsRepository = {
             data: { status: 'APPROVED' },
           });
 
-          // POTONG LIMIT: Kurangi saldo requester sesuai total PR
+
           await tx.user.update({
             where: { id: updatedStep.purchaseRequest.userId },
             data: {
@@ -123,7 +123,7 @@ export const ApprovalsRepository = {
             },
           });
 
-          // NOTIF: Kabarin requester kalo udah SELESAI SEMUA
+
           await tx.notification.create({
             data: {
               userId: updatedStep.purchaseRequest.userId,
@@ -134,7 +134,7 @@ export const ApprovalsRepository = {
             },
           });
         } else {
-          // NOTIF: Kabarin requester kalo tahap ini beres
+
           await tx.notification.create({
             data: {
               userId: updatedStep.purchaseRequest.userId,
@@ -145,19 +145,19 @@ export const ApprovalsRepository = {
             },
           });
 
-          // NOTIF: Kabarin role selanjutnya kalo ada PR nunggu
+
           const nextStep = allSteps
             .sort((a, b) => a.stepOrder - b.stepOrder)
             .find((s) => s.action === 'PENDING');
 
           if (nextStep) {
-            // Cari semua user yang punya role ini
+
             const targetUsers = await tx.user.findMany({
               where: { roleId: nextStep.roleId },
             });
 
             for (const targetUser of targetUsers) {
-              // Filter departemen buat manager
+
               if (nextStep.role.name.toLowerCase().includes('manager')) {
                 if (
                   targetUser.departmentId !==

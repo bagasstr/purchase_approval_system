@@ -55,7 +55,7 @@ const SettingsPage = () => {
       </div>
 
       <div className='grid gap-6 md:grid-cols-2'>
-        {/* Kolom Kiri: Kelola Master Data Department */}
+        {}
         <Card className='backdrop-blur-sm bg-card/80 border-zinc-200/50 dark:border-zinc-800/50 flex flex-col justify-between'>
           <CardHeader>
             <CardTitle className='text-base font-semibold flex items-center gap-2'>
@@ -68,7 +68,7 @@ const SettingsPage = () => {
           </CardHeader>
 
           <CardContent className='space-y-4'>
-            {/* Form Input Tambah */}
+            {}
             <form onSubmit={handleAddDept} className='flex items-center gap-2'>
               <input
                 type='text'
@@ -82,7 +82,7 @@ const SettingsPage = () => {
               </Button>
             </form>
 
-            {/* List Department */}
+            {}
             <div className='border rounded-md divide-y border-zinc-100 dark:border-zinc-800/60'>
               {departments.map((dept, i) => (
                 <div
@@ -104,7 +104,7 @@ const SettingsPage = () => {
           </CardContent>
         </Card>
 
-        {/* Kolom Kanan: Keamanan & General */}
+        {}
         <Card className='backdrop-blur-sm bg-card/80 border-zinc-200/50 dark:border-zinc-800/50'>
           <CardHeader>
             <CardTitle className='text-base font-semibold flex items-center gap-2'>

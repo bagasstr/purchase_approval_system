@@ -8,7 +8,6 @@ import { hashPassword } from 'better-auth/crypto';
 
 export const addUserAction = async (allData: SignUpData) => {
   try {
-    // Cek izin manual
     if (!(await hasPermission('user:all'))) {
       throw new Error('Anda tidak memiliki izin untuk menambah user.');
     }
@@ -22,7 +21,6 @@ export const addUserAction = async (allData: SignUpData) => {
       return { success: false, error: 'Missing required information' };
     }
 
-    // 1. Cari roleId & departmentId dulu biar bisa langsung dimasukin pas create
     const targetRole = await prisma.role.findUnique({
       where: { name: allData.role || 'employee' },
     });
@@ -37,13 +35,10 @@ export const addUserAction = async (allData: SignUpData) => {
       departmentId = dep.id;
     }
 
-    // 2. Akses internalAdapter via $context
     const ctx = await auth.$context;
 
-    // 3. Hash password
     const hashedPassword = await hashPassword(allData.password);
 
-    // 4. Buat User via internalAdapter
     const user = await ctx.internalAdapter.createUser({
       name: allData.name,
       email: allData.email,
@@ -58,7 +53,6 @@ export const addUserAction = async (allData: SignUpData) => {
       throw new Error('Gagal membuat user via Internal Adapter.');
     }
 
-    // 5. Buat Credential Account (untuk login email/password)
     await ctx.internalAdapter.createAccount({
       userId: user.id,
       providerId: 'credential',

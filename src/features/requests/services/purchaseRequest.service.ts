@@ -21,14 +21,14 @@ export const PurchaseRequestService = {
   },
 
   async createRequest(userId: string, departmentId: string, data: any) {
-    // Generate Request Number (PR-YYYYMMDD-XXXX)
+
     const date = new Date();
     const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
     const allReqs = await PurchaseRequestRepository.getAll();
     const nextNum = (allReqs.length + 1).toString().padStart(4, '0');
     const requestNo = `PR-${dateStr}-${nextNum}`;
 
-    // Alur Pengadaan Baru: Manager -> Procurement (Survey) -> Finance -> Procurement (Beli)
+
     const requiredPermissions = [
       'purchase-request:approve-manager',
       'purchase-request:approve-procurement-survey',

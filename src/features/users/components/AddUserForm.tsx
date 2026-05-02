@@ -78,7 +78,7 @@ const AddUserForm = () => {
       toast.success('User baru berhasil ditambahkan!');
       setIsOpen(false);
       reset();
-      // Idealnya trigger refresh data table disini
+
       window.location.reload();
     } else {
       toast.error(res.error || 'Gagal menambahkan user');

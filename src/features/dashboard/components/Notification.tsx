@@ -34,7 +34,7 @@ export default function Notification() {
 
   return (
     <div className='relative' ref={dropdownRef}>
-      {/* Trigger Bell Button */}
+      {}
       <Button
         variant='ghost'
         size='icon-lg'
@@ -47,7 +47,7 @@ export default function Notification() {
         )}
       </Button>
 
-      {/* Dropdown Panel */}
+      {}
       {isOpen && (
         <div className='absolute right-0 mt-2 w-80 bg-background border rounded-lg shadow-lg z-50 overflow-hidden animate-in fade-in-0 zoom-in-95 duration-100'>
           <div className='flex items-center justify-between p-4 border-b border bg-background/50'>
