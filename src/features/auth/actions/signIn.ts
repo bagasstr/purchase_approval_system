@@ -16,19 +16,15 @@ export const signInAction = async (allData: SignInData) => {
       return { success: false, error: 'Data tidak valid' };
     }
 
-    const res = await auth.api.signInEmail({
+    // Don't use asResponse: true — let nextCookies() plugin handle
+    // setting the session cookie automatically via Next.js headers
+    await auth.api.signInEmail({
       body: {
         email: allData.email,
         password: allData.password,
       },
       headers: await headers(),
-      asResponse: true,
     });
-
-    if (!res.ok) {
-      const errorData = await res.json();
-      return { success: false, error: errorData.message || 'Login gagal' };
-    }
 
     return { success: true };
   } catch (error: any) {
