@@ -15,6 +15,9 @@ export interface DashboardStats {
 
 export const getDashboardStatsAction = async (): Promise<DashboardStats> => {
   try {
+    // Session is already validated by dashboard layout, but we still need
+    // the user ID for scoping queries. This call is cached within the same
+    // request lifecycle by better-auth, so it's essentially free.
     const session = await auth.api.getSession({
       headers: await headers(),
     });
@@ -25,7 +28,6 @@ export const getDashboardStatsAction = async (): Promise<DashboardStats> => {
 
     const user = session.user as any;
     const userDepartmentId = user.departmentId;
-
 
     const userFull = await prisma.user.findUnique({
       where: { id: user.id },
@@ -43,7 +45,6 @@ export const getDashboardStatsAction = async (): Promise<DashboardStats> => {
       roleName.includes('manager') ||
       userPermissions.includes('purchase-request:approve-manager');
 
-
     const whereClause: any = {};
     if (!isAdmin) {
       if (isManager) {
@@ -53,8 +54,8 @@ export const getDashboardStatsAction = async (): Promise<DashboardStats> => {
       }
     }
 
-
-    const [total, pending, approved, allApproved] = await Promise.all([
+    // Parallelize ALL DB queries — no more sequential waterfalls
+    const [total, pending, approved, allApproved, recentRequestsRaw, departments] = await Promise.all([
       prisma.purchaseRequest.count({ where: whereClause }),
       prisma.purchaseRequest.count({ where: { ...whereClause, status: 'PENDING' } }),
       prisma.purchaseRequest.count({ where: { ...whereClause, status: 'APPROVED' } }),
@@ -62,20 +63,27 @@ export const getDashboardStatsAction = async (): Promise<DashboardStats> => {
         where: { ...whereClause, status: 'APPROVED' },
         select: { totalAmount: true },
       }),
+      prisma.purchaseRequest.findMany({
+        where: whereClause,
+        include: {
+          requester: true,
+          department: true,
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+      }),
+      prisma.department.findMany({
+        where: isAdmin ? {} : { id: userDepartmentId || 'none' },
+        include: {
+          purchaseRequests: {
+            where: { status: 'APPROVED', ...(isAdmin ? {} : { userId: isManager ? undefined : user.id }) },
+            select: { totalAmount: true },
+          },
+        },
+      }),
     ]);
 
     const totalSpent = allApproved.reduce((sum, item) => sum + Number(item.totalAmount), 0);
-
-
-    const recentRequestsRaw = await prisma.purchaseRequest.findMany({
-      where: whereClause,
-      include: {
-        requester: true,
-        department: true,
-      },
-      orderBy: { createdAt: 'desc' },
-      take: 5,
-    });
 
     const recentRequests = recentRequestsRaw.map(req => ({
       id: req.requestNo,
@@ -85,17 +93,6 @@ export const getDashboardStatsAction = async (): Promise<DashboardStats> => {
       amount: new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Number(req.totalAmount)),
       status: req.status === 'APPROVED' ? 'Approved' : req.status === 'REJECTED' ? 'Rejected' : 'Pending',
     }));
-
-
-    const departments = await prisma.department.findMany({
-      where: isAdmin ? {} : { id: userDepartmentId || 'none' },
-      include: {
-        purchaseRequests: {
-          where: { status: 'APPROVED', ...(isAdmin ? {} : { userId: isManager ? undefined : user.id }) },
-          select: { totalAmount: true },
-        },
-      },
-    });
 
     let totalAllDept = 0;
     const deptSpending = departments.map(dept => {
