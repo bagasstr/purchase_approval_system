@@ -87,13 +87,13 @@ export const PurchaseRequestRepository = {
       },
       include: {
         approvals: {
-          include: { role: true }
-        }
-      }
+          include: { role: true },
+        },
+      },
     });
 
     // NOTIF: Kabarin approver pertama
-    const firstStep = newRequest.approvals.find(s => s.stepOrder === 1);
+    const firstStep = newRequest.approvals.find((s) => s.stepOrder === 1);
     if (firstStep) {
       const targetUsers = await prisma.user.findMany({
         where: { roleId: firstStep.roleId },

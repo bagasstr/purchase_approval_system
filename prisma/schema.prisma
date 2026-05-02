@@ -58,7 +58,7 @@ model User {
   image         String?
   phone         String?
 
-  approvalLimit Float   @default(0)
+  approvalLimit Float @default(0)
 
   departmentId String?
   department   Department? @relation(fields: [departmentId], references: [id])
